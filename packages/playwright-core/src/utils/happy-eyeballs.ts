@@ -113,13 +113,14 @@ export async function createConnectionAsync(
   const addresses = await lookup(hostname);
   const dnsLookupAt = monotonicTime();
   const sockets = new Set<net.Socket>();
-  let firstError;
+  let firstError: any;
   let errorCount = 0;
   const handleError = (socket: net.Socket, err: Error) => {
     if (!sockets.delete(socket))
       return;
     ++errorCount;
-    firstError ??= err;
+    if (!firstError)
+      firstError = err;
     if (errorCount === addresses.length)
       oncreate?.(firstError);
   };

@@ -153,7 +153,7 @@ export class HarTracer {
     const promise = page.mainFrame().evaluateExpression(String(() => {
       return {
         title: document.title,
-        domContentLoaded: performance.timing.domContentLoadedEventStart,
+        domContentLoaded: window.performance.timing.domContentLoadedEventStart,
       };
     }), { isFunction: true, world: 'utility' }).then(result => {
       pageEntry.title = result.title;
@@ -167,7 +167,7 @@ export class HarTracer {
     const promise = page.mainFrame().evaluateExpression(String(() => {
       return {
         title: document.title,
-        loaded: performance.timing.loadEventStart,
+        loaded: window.performance.timing.loadEventStart,
       };
     }), { isFunction: true, world: 'utility' }).then(result => {
       pageEntry.title = result.title;
@@ -574,7 +574,8 @@ export class HarTracer {
     if (!postData)
       return;
 
-    contentType ??= 'application/octet-stream';
+    if (!contentType)
+      contentType = 'application/octet-stream';
 
     const result: har.PostData = {
       mimeType: contentType,

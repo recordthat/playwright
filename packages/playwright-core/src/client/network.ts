@@ -372,8 +372,10 @@ export class Route extends ChannelOwner<channels.RouteChannel> implements api.Ro
     }
 
     if (options.response instanceof APIResponse) {
-      statusOption ??= options.response.status();
-      headersOption ??= options.response.headers();
+      if (!statusOption)
+        statusOption = options.response.status();
+      if (!headersOption)
+        headersOption = options.response.headers();
       if (body === undefined && options.path === undefined) {
         if (options.response._request._connection === this._connection)
           fetchResponseUid = (options.response as APIResponse)._fetchUid();

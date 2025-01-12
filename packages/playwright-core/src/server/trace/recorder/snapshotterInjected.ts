@@ -318,7 +318,7 @@ export function frameSnapshotStreamer(snapshotStreamer: string, removeNoScript: 
     }
 
     captureSnapshot(): SnapshotData | undefined {
-      const timestamp = performance.now();
+      const timestamp = window.performance.now();
       const snapshotNumber = ++this._lastSnapshotNumber;
       let nodeCounter = 0;
       let shadowDomNesting = 0;
@@ -616,7 +616,7 @@ export function frameSnapshotStreamer(snapshotStreamer: string, removeNoScript: 
         result.resourceOverrides.push({ url, content, contentType: 'text/css' },);
       }
 
-      result.collectionTime = performance.now() - timestamp;
+      result.collectionTime = window.performance.now() - timestamp;
       return result;
     }
   }

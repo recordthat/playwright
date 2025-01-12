@@ -266,7 +266,8 @@ async function resolvePathsAndDirectoryForInputFiles(items: string[]): Promise<[
         throw new Error('Multiple directories are not supported');
       localDirectory = path.resolve(item as string);
     } else {
-      localPaths ??= [];
+      if (!localPaths)
+        localPaths = [];
       localPaths.push(path.resolve(item as string));
     }
   }

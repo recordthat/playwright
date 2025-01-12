@@ -196,7 +196,7 @@ export class SerializedFS {
         zipFile.outputStream
             .pipe(fs.createWriteStream(op.zipFileName))
             .on('close', () => result.resolve())
-            .on('error', error => result.reject(error));
+            .on('error', (error: any) => result.reject(error));
         await result;
         return;
       }

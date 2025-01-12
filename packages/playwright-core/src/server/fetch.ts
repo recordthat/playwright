@@ -256,7 +256,8 @@ export abstract class APIRequestContext extends SdkObject {
   }
 
   private async _sendRequestWithRetries(progress: Progress, url: URL, options: SendRequestOptions, postData?: Buffer, maxRetries?: number): Promise<Omit<channels.APIResponse, 'fetchUid'> & { body: Buffer }>{
-    maxRetries ??= 0;
+    if (!maxRetries)
+      maxRetries = 0;
     let backoff = 250;
     for (let i = 0; i <= maxRetries; i++) {
       try {
@@ -499,12 +500,16 @@ export abstract class APIRequestContext extends SdkObject {
         // happy eyeballs don't emit lookup and connect events, so we use our custom ones
         const happyEyeBallsTimings = timingForSocket(socket);
         dnsLookupAt = happyEyeBallsTimings.dnsLookupAt;
-        tcpConnectionAt ??= happyEyeBallsTimings.tcpConnectionAt;
+        if (tcpConnectionAt)
+          tcpConnectionAt = happyEyeBallsTimings.tcpConnectionAt;
 
         // non-happy-eyeballs sockets
         listeners.push(
             eventsHelper.addEventListener(socket, 'lookup', () => { dnsLookupAt = monotonicTime(); }),
-            eventsHelper.addEventListener(socket, 'connect', () => { tcpConnectionAt ??= monotonicTime(); }),
+            eventsHelper.addEventListener(socket, 'connect', () => {
+              if (!tcpConnectionAt)
+                tcpConnectionAt = monotonicTime();
+            }),
             eventsHelper.addEventListener(socket, 'secureConnect', () => {
               tlsHandshakeAt = monotonicTime();
 
@@ -522,8 +527,10 @@ export abstract class APIRequestContext extends SdkObject {
         );
 
         // when using socks proxy, having the socket means the connection got established
-        if (agent instanceof SocksProxyAgent)
-          tcpConnectionAt ??= monotonicTime();
+        if (agent instanceof SocksProxyAgent){
+          if (!tcpConnectionAt)
+            tcpConnectionAt = monotonicTime();
+        }
 
         serverIPAddress = socket.remoteAddress;
         serverPort = socket.remotePort;
@@ -532,7 +539,8 @@ export abstract class APIRequestContext extends SdkObject {
 
       // http proxy
       request.on('proxyConnect', () => {
-        tcpConnectionAt ??= monotonicTime();
+        if (!tcpConnectionAt)
+          tcpConnectionAt = monotonicTime();
       });
 
 

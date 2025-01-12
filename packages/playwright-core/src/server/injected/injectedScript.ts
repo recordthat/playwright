@@ -571,7 +571,7 @@ export class InjectedScript {
         return 'error:notconnected';
 
       // Drop frames that are shorter than 16ms - WebKit Win bug.
-      const time = performance.now();
+      const time = this.window.performance.now();
       if (this._stableRafCount > 1 && time - lastTime < 15)
         return continuePolling;
       lastTime = time;
@@ -1045,13 +1045,15 @@ export class InjectedScript {
               return touches;
             return (this.document as any).createTouchList(...touches.map(createTouch));
           };
-          eventInit.target ??= node;
+          if (eventInit.target)
+            eventInit.target = node;
           eventInit.touches = createTouchList(eventInit.touches);
           eventInit.targetTouches = createTouchList(eventInit.targetTouches);
           eventInit.changedTouches = createTouchList(eventInit.changedTouches);
           event = new TouchEvent(type, eventInit);
         } else {
-          eventInit.target ??= node;
+          if (eventInit.target)
+            eventInit.target = node;
           eventInit.touches = eventInit.touches?.map((t: any) => t instanceof Touch ? t : new Touch({ ...t, target: t.target ?? node }));
           eventInit.targetTouches = eventInit.targetTouches?.map((t: any) => t instanceof Touch ? t : new Touch({ ...t, target: t.target ?? node }));
           eventInit.changedTouches = eventInit.changedTouches?.map((t: any) => t instanceof Touch ? t : new Touch({ ...t, target: t.target ?? node }));

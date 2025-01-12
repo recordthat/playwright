@@ -1043,14 +1043,22 @@ let cachesCounter = 0;
 
 export function beginAriaCaches() {
   ++cachesCounter;
-  cacheAccessibleName ??= new Map();
-  cacheAccessibleNameHidden ??= new Map();
-  cacheAccessibleDescription ??= new Map();
-  cacheAccessibleDescriptionHidden ??= new Map();
-  cacheAccessibleErrorMessage ??= new Map();
-  cacheIsHidden ??= new Map();
-  cachePseudoContentBefore ??= new Map();
-  cachePseudoContentAfter ??= new Map();
+  if (!cacheAccessibleName)
+    cacheAccessibleName = new Map();
+  if (!cacheAccessibleNameHidden)
+    cacheAccessibleNameHidden = new Map();
+  if (!cacheAccessibleDescription)
+    cacheAccessibleDescription = new Map();
+  if (!cacheAccessibleDescriptionHidden)
+    cacheAccessibleDescriptionHidden = new Map();
+  if (!cacheAccessibleErrorMessage)
+    cacheAccessibleErrorMessage = new Map();
+  if (!cacheIsHidden)
+    cacheIsHidden = new Map();
+  if (!cachePseudoContentBefore)
+    cachePseudoContentBefore = new Map();
+  if (!cachePseudoContentAfter)
+    cachePseudoContentAfter = new Map();
 }
 
 export function endAriaCaches() {
